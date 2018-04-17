@@ -6,7 +6,7 @@
 #define true 1
 #define false 0
 
-//Função que conta o número de colunas da matriz
+//FunÃ§Ã£o que conta o nÃºmero de colunas da matriz
 int numDeColunas(FILE *f){
 	int vertices = 0;
 	char str[1024];
@@ -27,7 +27,7 @@ int numDeColunas(FILE *f){
 	return vertices;
 }
 
-//Função que imprime matriz
+//FunÃ§Ã£o que imprime matriz
 void imprimeMatriz(int** m, int linhas, int colunas){
 	int i, j;
 	for(i=0; i<linhas; i++){
@@ -41,7 +41,7 @@ void imprimeMatriz(int** m, int linhas, int colunas){
 	}
 }
 
-//Função que adiciona um elemento na fila
+//FunÃ§Ã£o que adiciona um elemento na fila
 void push(int* vec, int num, int size){
 	int i;
 	for(i=0; i<size; i++){
@@ -53,7 +53,7 @@ void push(int* vec, int num, int size){
 	}
 }
 
-//Função que retira um elemento da fila
+//FunÃ§Ã£o que retira um elemento da fila
 void pop(int* vec, int size){
 	int i;
 	for(i=0; i<size; i++){
@@ -62,55 +62,55 @@ void pop(int* vec, int size){
 	}
 }
 
-//Função que cria matriz de distancias minimas
+//FunÃ§Ã£o que cria matriz de distancias minimas
 void dijkstra(int** g, int** d, int size){
 	int i;
 	int inicio;
-	//Aloca espaço na memoria para o vetor cor e Q
+	//Aloca espaÃ§o na memoria para o vetor cor e Q
 	int* cor = malloc(sizeof(int)*size);
 	int* Q = malloc(sizeof(int)*size);
 
 	/*
 	Repete o processo de achar a distancia minima
 	Uma vez para cada vertice
-	Inicio é o vertice de ponto de partida
+	Inicio Ã© o vertice de ponto de partida
 	*/
 	for(inicio=0; inicio<size; inicio++){
 		//Inicializa a fila Q e o vetor cor
 		for(i=0; i<size; i++){
-			Q[i] = -1; //-1 é uma posição da fila vazia
-			cor[i] = false; //Todo numero false ainda não foi encontrado
+			Q[i] = -1; //-1 Ã© uma posiÃ§Ã£o da fila vazia
+			cor[i] = false; //Todo numero false ainda nÃ£o foi encontrado
 		}
 
 		push(Q, inicio, size);	//Adiciona o numero inicial a fila Q
 		cor[inicio] = true;		//Marca o numero inicial como achado
-		//d[inicio][inicio] = 0;  //Define a distancia do numero inicial até ele mesmo como 0
+		//d[inicio][inicio] = 0;  //Define a distancia do numero inicial atÃ© ele mesmo como 0
 
-		//Enquanto a fila não estiver vazia
+		//Enquanto a fila nÃ£o estiver vazia
 		while(Q[0]!=-1){
-			int u = Q[0];   //Armazena o elemento da frente da fila na variável u
+			int u = Q[0];   //Armazena o elemento da frente da fila na variÃ¡vel u
 			pop(Q, size); 	//Retira um elemento da fila
 			for(i=0; i<size; i++){
-				int peso = g[u][i]; //Armazena o peso de u à i
+				int peso = g[u][i]; //Armazena o peso de u Ã  i
 
 				//Se o peso do vertice for infinito
-				if(peso==INT_MAX/2)
+				if(peso==INFINITO)
 					continue;   //Ignora essa passagem do for
 
-				//Se a distancia até u + o peso for menor que a distancia até i atual
+				//Se a distancia atÃ© u + o peso for menor que a distancia atÃ© i atual
 				if(d[inicio][u] + peso < d[inicio][i]){
-					d[inicio][i] = d[inicio][u] + peso; //Troca a distancia até i atual pela soma do peso e distancia até u
+					d[inicio][i] = d[inicio][u] + peso; //Troca a distancia atÃ© i atual pela soma do peso e distancia atÃ© u
 				}
 
-				//Se o número i ainda não foi encontrado
+				//Se o nÃºmero i ainda nÃ£o foi encontrado
 				if(cor[i] == false){
-					cor[i] = true;  	//Marca o número i como encontrado
+					cor[i] = true;  	//Marca o nÃºmero i como encontrado
 					push(Q, i, size);   //Adiciona i a fila Q
 				}
 			}
 		}
 	}
-	//Liberta os espaços alocados da memória
+	//Liberta os espaÃ§os alocados da memÃ³ria
 	free(cor);
 	free(Q);
 }
@@ -127,13 +127,13 @@ int main()
 	if(f==NULL) puts("ERRO! O arquivo nao foi aberto!");
 	else vertices = numDeColunas(f); //Pega o numero de vertices
 
-	rewind(f);  //Volta para o começo do arquivo
+	rewind(f);  //Volta para o comeÃ§o do arquivo
 
-	//Aloca espaço para a matriz de pesos
+	//Aloca espaÃ§o para a matriz de pesos
 	vec_pesos = malloc(sizeof(int)*(vertices*vertices));
 	pesos = malloc(sizeof(int)*vertices);
 
-	//Aloca espaço para a matriz de distancias minimas
+	//Aloca espaÃ§o para a matriz de distancias minimas
 	vec_d = malloc(sizeof(int)*(vertices*vertices));
 	d = malloc(sizeof(int)*vertices);
 	int k=0;
@@ -145,7 +145,7 @@ int main()
 		d[i] = vec_d+k;
 		for(j=0; j<vertices; j++){
 			fscanf(f, "%d", &vec_pesos[k]);
-			if(vec_pesos[k]==-1)vec_pesos[k] = INFINITO;   //Se o numero for -1 o peso é infinito
+			if(vec_pesos[k]==-1)vec_pesos[k] = INFINITO;   //Se o numero for -1 o peso Ã© infinito
 			vec_d[k] = vec_pesos[k];
 			k++;
 		}
@@ -155,7 +155,7 @@ int main()
 	imprimeMatriz(pesos, vertices, vertices);
 	puts("");
 
-	//Chama a função de dijkstra
+	//Chama a funÃ§Ã£o de dijkstra
 	dijkstra(pesos, d, vertices);
 
 	//IMPRIME a matriz de distancias minimas
@@ -173,7 +173,7 @@ int main()
 
 	fclose(f); //Fecha o arquivo
 
-	//Liberta os espaços alocados da memória
+	//Liberta os espaÃ§os alocados da memÃ³ria
 	free(vec_pesos);
 	free(pesos);
 
