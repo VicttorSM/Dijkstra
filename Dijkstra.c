@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <locale.h>
 
 #define INFINITO INT_MAX/2
 #define true 1
 #define false 0
 
-//Função que conta o número de colunas da matriz
+//FunÃ§Ã£o que conta o nÃºmero de colunas da matriz
 int numDeColunas(FILE *f){
 	int vertices = 0;
 	char str[2048];
@@ -19,7 +20,7 @@ int numDeColunas(FILE *f){
 	return vertices;
 }
 
-//Função que imprime matriz
+//FunÃ§Ã£o que imprime matriz
 void imprimeMatriz(int** m, int linhas, int colunas, char c[100]){
 	int i, j;
 	printf("Matriz de %s:\n", c);
@@ -35,7 +36,7 @@ void imprimeMatriz(int** m, int linhas, int colunas, char c[100]){
 	puts("");
 }
 
-//Função que adiciona um elemento na fila
+//FunÃ§Ã£o que adiciona um elemento na fila
 void push(int* vec, int num, int size){
 	int i;
 	for(i=0; i<size; i++){
@@ -47,7 +48,7 @@ void push(int* vec, int num, int size){
 	}
 }
 
-//Função que retira um elemento da fila
+//FunÃ§Ã£o que retira um elemento da fila
 void pop(int* vec, int size){
 	int i;
 	for(i=0; i<size; i++){
@@ -56,30 +57,30 @@ void pop(int* vec, int size){
 	}
 }
 
-//Função que lê matriz do arquivo f, e guarda nas matrizes pesos e d
+//FunÃ§Ã£o que lÃª matriz do arquivo f, e guarda nas matrizes pesos e d
 void lerMatriz(FILE *f, int linhas, int colunas, int** pesos, int** d){
 	int i, j;
 	for(i=0; i<linhas; i++){
 		for(j=0; j<colunas; j++){
 			fscanf(f, "%d", &pesos[i][j]);
-			if(pesos[i][j]==-1)pesos[i][j] = INFINITO;   //Se o numero for -1 o peso é infinito
+			if(pesos[i][j]==-1)pesos[i][j] = INFINITO;   //Se o numero for -1 o peso Ã© infinito
 			d[i][j] = pesos[i][j];
 		}
 	}
 }
 
-//Função que imprime o caminho minimo entre dois vertices lidos do arquivo f
+//FunÃ§Ã£o que imprime o caminho minimo entre dois vertices lidos do arquivo f
 void caminhoMinimo(FILE *f, int** d){
 	int u, v;
 	while(fscanf(f, "%d %d", &u, &v)==2){
 		if(d[u][v]==INFINITO)
-			printf("Nao eh possivel ir de %d ate %d\n", u, v);
+			printf("NÃ£o Ã© possivel ir de %d atÃ© %d\n", u, v);
 		else
-			printf("A distancia minima de %d ate %d eh: %d\n", u, v, d[u][v]);
+			printf("A distÃ¢ncia mÃ­nima de %d atÃ© %d Ã©: %d\n", u, v, d[u][v]);
 	}
 }
 
-//Função que aloca espaço para uma matriz
+//FunÃ§Ã£o que aloca espaÃ§o para uma matriz
 int** alocaMatriz(int linhas, int colunas){
 	int** m;
 	m = malloc(sizeof(int*)*linhas);
@@ -90,7 +91,7 @@ int** alocaMatriz(int linhas, int colunas){
 	return m;
 }
 
-//Função que destroi uma matriz
+//FunÃ§Ã£o que destroi uma matriz
 void freeMatriz(int** m, int linhas){
 	int i;
 	for(i=0; i<linhas; i++){
@@ -99,60 +100,61 @@ void freeMatriz(int** m, int linhas){
 	free(m);
 }
 
-//Função que cria matriz de distancias minimas
+//FunÃ§Ã£o que cria matriz de distancias minimas
 void dijkstra(int** g, int** d, int size){
 	int i;
 	int inicio;
-	//Aloca espaço na memoria para o vetor cor e Q
+	//Aloca espaÃ§o na memoria para o vetor cor e Q
 	int* cor = malloc(sizeof(int)*size);
 	int* Q = malloc(sizeof(int)*size);
 
 	/*
 	Repete o processo de achar a distancia minima
 	Uma vez para cada vertice
-	Inicio é o vertice de ponto de partida
+	Inicio Ã© o vertice de ponto de partida
 	*/
 	for(inicio=0; inicio<size; inicio++){
 		//Inicializa a fila Q e o vetor cor
 		for(i=0; i<size; i++){
-			Q[i] = -1; //-1 é uma posição da fila vazia
-			cor[i] = false; //Todo numero false ainda não foi encontrado
+			Q[i] = -1; //-1 Ã© uma posiÃ§Ã£o da fila vazia
+			cor[i] = false; //Todo numero false ainda nÃ£o foi encontrado
 		}
 
 		push(Q, inicio, size);	//Adiciona o numero inicial a fila Q
 		cor[inicio] = true;		//Marca o numero inicial como achado
 
-		//Enquanto a fila não estiver vazia
+		//Enquanto a fila nÃ£o estiver vazia
 		while(Q[0]!=-1){
-			int u = Q[0];   //Armazena o elemento da frente da fila na variável u
+			int u = Q[0];   //Armazena o elemento da frente da fila na variÃ¡vel u
 			pop(Q, size); 	//Retira um elemento da fila
 			for(i=0; i<size; i++){
-				int peso = g[u][i]; //Armazena o peso de u à i
+				int peso = g[u][i]; //Armazena o peso de u Ã  i
 
 				//Se o peso do vertice for infinito
 				if(peso==INFINITO)
 					continue;   //Ignora essa passagem do for
 
-				//Se a distancia até u + o peso for menor que a distancia até i atual
+				//Se a distancia atÃ© u + o peso for menor que a distancia atÃ© i atual
 				if(d[inicio][u] + peso < d[inicio][i]){
-					d[inicio][i] = d[inicio][u] + peso; //Troca a distancia até i atual pela soma do peso e distancia até u
+					d[inicio][i] = d[inicio][u] + peso; //Troca a distancia atÃ© i atual pela soma do peso e distancia atÃ© u
 				}
 
-				//Se o número i ainda não foi encontrado
+				//Se o nÃºmero i ainda nÃ£o foi encontrado
 				if(cor[i] == false){
-					cor[i] = true;  	//Marca o número i como encontrado
+					cor[i] = true;  	//Marca o nÃºmero i como encontrado
 					push(Q, i, size);   //Adiciona i a fila Q
 				}
 			}
 		}
 	}
-	//Liberta os espaços alocados da memória
+	//Liberta os espaÃ§os alocados da memÃ³ria
 	free(cor);
 	free(Q);
 }
 
 int main()
 {
+	setlocale(LC_ALL,""); //Muda os tipos de caracteres para poder usar acentos e Ã§
 	int vertices=0;
 	int x, y, z;
 	int **pesos, **d;
@@ -162,10 +164,10 @@ int main()
 	if(f==NULL) puts("ERRO! O arquivo nao foi aberto!");
 	else{
 		vertices = numDeColunas(f); //Pega o numero de vertices
-		rewind(f);  //Volta para o começo do arquivo
+		rewind(f);  //Volta para o comeÃ§o do arquivo
 	}
 
-	//Aloca espaço para as matrizes
+	//Aloca espaÃ§o para as matrizes
 	pesos = alocaMatriz(vertices, vertices);
 	d = alocaMatriz(vertices, vertices);
 
@@ -173,14 +175,15 @@ int main()
 	
 	imprimeMatriz(pesos, vertices, vertices, "pesos"); //IMPRIME a matriz de pesos
 
-	dijkstra(pesos, d, vertices); //Chama a função de dijkstra
+	dijkstra(pesos, d, vertices); //Chama a funÃ§Ã£o de dijkstra
 
-	imprimeMatriz(d, vertices, vertices, "distancia minima"); //IMPRIME a matriz de distancias minimas
+	imprimeMatriz(d, vertices, vertices, "distÃ¢ncia mÃ­nima"); //IMPRIME a matriz de distancias minimas
 
 	caminhoMinimo(f, d); //IMPRIME caminho minimo de um vertice a outro
 
 	fclose(f); //Fecha o arquivo
-	//Liberta os espaços alocados da memória
+	
+	//Liberta os espaÃ§os alocados da memÃ³ria
 	freeMatriz(pesos, vertices);
 	freeMatriz(d, vertices);
 
