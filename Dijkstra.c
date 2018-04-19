@@ -178,7 +178,7 @@ void dijkstra(int** g, int** d, int size){
 
 int main()
 {
-	setlocale(LC_ALL,""); //Muda os tipos de caracteres para poder usar acentos e ç
+	setlocale(LC_ALL,"Portuguese"); //Muda os tipos de caracteres para poder usar acentos e ç
 	int vertices=0;
 	int x, y, z;
 	int **pesos, **d;
