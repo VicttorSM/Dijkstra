@@ -7,9 +7,9 @@
 #define true 1
 #define false 0
 
-//Função que conta o número de colunas da matriz
+//Função que conta o número de colunas da matriz e verifica se a matriz é quadrada
 int numDeColunas(FILE *f){
-	int vertices = 0;
+	int vertices = 0, linhas = 0, colunas = 0, ProxColuna;
 	char str[2048];
 	fgets(str, 2048, f);
 	int i=0, digitos, num, total=0;
@@ -17,11 +17,29 @@ int numDeColunas(FILE *f){
 		vertices++;
 		total+=digitos;
 	}
+	colunas = vertices;
+	linhas = vertices-1;
+	for(linhas=vertices-1; linhas>0; linhas--){
+		fgets(str, 2048, f);
+		total = 0;
+        ProxColuna = 0;
+		while(sscanf(str+total, "%d%n", &num, &digitos)!=-1){
+			ProxColuna++;
+			total+=digitos;
+		}
+		if(ProxColuna!=colunas) break;
+	}
+	
+	if(linhas!=0){
+		printf("A matriz lida não é uma matriz quadrada\n");
+		return 0;
+	}
 	return vertices;
 }
 
 //Função que imprime matriz
-void imprimeMatriz(int** m, int linhas, int colunas, char c[100]){
+int imprimeMatriz(int** m, int linhas, int colunas, char c[100]){
+	if(linhas==0 || colunas==0) return 0;
 	int i, j;
 	printf("Matriz de %s:\n", c);
 	for(i=0; i<linhas; i++){
@@ -70,13 +88,19 @@ void lerMatriz(FILE *f, int linhas, int colunas, int** pesos, int** d){
 }
 
 //Função que imprime o caminho minimo entre dois vertices lidos do arquivo f
-void caminhoMinimo(FILE *f, int** d){
+int caminhoMinimo(FILE *f, int** d, int max){
+	if(max==0) return 0;
 	int u, v;
 	while(fscanf(f, "%d %d", &u, &v)==2){
-		if(d[u][v]==INFINITO)
-			printf("Não é possivel ir de %d até %d\n", u, v);
-		else
-			printf("A distância mínima de %d até %d é: %d\n", u, v, d[u][v]);
+		if(u>=max && v>=max) printf("O grafo não tem os vertices %d e %d\n", u, v);
+		else if(u>=max) printf("O grafo não tem vertice %d\n", u);
+		else if(v>=max) printf("O grafo não tem vertice %d\n", v);
+		else{
+			if(d[u][v]==INFINITO)
+				printf("Não é possivel ir de %d até %d\n", u, v);
+			else
+				printf("A distância mínima de %d até %d é: %d\n", u, v, d[u][v]);
+		}
 	}
 }
 
@@ -109,9 +133,9 @@ void dijkstra(int** g, int** d, int size){
 	int* Q = malloc(sizeof(int)*size);
 
 	/*
-	Repete o processo de achar a distancia minima
-	Uma vez para cada vertice
-	Inicio é o vertice de ponto de partida
+	*Repete o processo de achar a distancia minima
+	*Uma vez para cada vertice
+	*Inicio é o vertice de ponto de partida
 	*/
 	for(inicio=0; inicio<size; inicio++){
 		//Inicializa a fila Q e o vetor cor
@@ -179,10 +203,9 @@ int main()
 
 	imprimeMatriz(d, vertices, vertices, "distância mínima"); //IMPRIME a matriz de distancias minimas
 
-	caminhoMinimo(f, d); //IMPRIME caminho minimo de um vertice a outro
+	caminhoMinimo(f, d, vertices); //IMPRIME caminho minimo de um vertice a outro
 
-	fclose(f); //Fecha o arquivo
-	
+	if(f!=NULL) fclose(f); //Fecha o arquivo
 	//Liberta os espaços alocados da memória
 	freeMatriz(pesos, vertices);
 	freeMatriz(d, vertices);
