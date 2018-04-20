@@ -7,12 +7,29 @@
 #define true 1
 #define false 0
 
+//Função que verifica se foi lida uma linha vazia
+int linhaVazia(char str[2048]){
+	int i, vazia = false;
+	for(i=0; i<2048 ; i++){
+		if(str[i]==' ' || str[i]==9) continue;
+		else if(str[i]==10){
+			vazia = true;
+			break;
+		}
+		else break;
+	}
+	return vazia;
+}
+
 //Função que conta o número de colunas da matriz e verifica se a matriz é quadrada
 int numDeColunas(FILE *f){
 	int vertices = 0, linhas = 0, colunas = 0, ProxColuna;
 	char str[2048];
-	fgets(str, 2048, f);
-	int i=0, digitos, num, total=0;
+	do{
+		fgets(str, 2048, f);
+	} while(linhaVazia(str));
+	
+	int digitos, num, total=0;
 	while(sscanf(str+total, "%d%n", &num, &digitos)!=-1){
 		vertices++;
 		total+=digitos;
