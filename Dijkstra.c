@@ -92,9 +92,9 @@ int caminhoMinimo(FILE *f, int** d, int max){
 	if(max==0) return 0;
 	int u, v;
 	while(fscanf(f, "%d %d", &u, &v)==2){
-		if(u>=max && v>=max) printf("O grafo não tem os vertices %d e %d\n", u, v);
-		else if(u>=max) printf("O grafo não tem vertice %d\n", u);
-		else if(v>=max) printf("O grafo não tem vertice %d\n", v);
+		if((u>=max && v>=max) || (u<0 && v<0)) printf("O grafo não tem os vertices %d e %d\n", u, v);
+		else if(u>=max || u<0) printf("O grafo não tem vertice %d\n", u);
+		else if(v>=max || v<0) printf("O grafo não tem vertice %d\n", v);
 		else{
 			if(d[u][v]==INFINITO)
 				printf("Não é possivel ir de %d até %d\n", u, v);
@@ -146,6 +146,7 @@ void dijkstra(int** g, int** d, int size){
 
 		push(Q, inicio, size);	//Adiciona o numero inicial a fila Q
 		cor[inicio] = true;		//Marca o numero inicial como achado
+		d[inicio][inicio] = 0;  //Consideramos que o peso do vertice até ele mesmo é 0
 
 		//Enquanto a fila não estiver vazia
 		while(Q[0]!=-1){
