@@ -39,7 +39,7 @@ int numDeColunas(FILE *f){
 	for(linhas=vertices-1; linhas>0; linhas--){
 		fgets(str, 2048, f);
 		total = 0;
-        ProxColuna = 0;
+		ProxColuna = 0;
 		while(sscanf(str+total, "%d%n", &num, &digitos)!=-1){
 			ProxColuna++;
 			total+=digitos;
