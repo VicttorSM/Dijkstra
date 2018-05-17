@@ -87,7 +87,7 @@ void push(int* vec, int num, int size){
 void pop(int* vec, int size){
 	int i;
 	for(i=0; i<size-1; i++){
-		vec[i+1];
+		vec[i] = vec[i+1];
 	}
 	vec[i]=-1;
 }
