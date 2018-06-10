@@ -58,8 +58,19 @@ int numDeColunas(FILE *f){
 int imprimeMatriz(int** m, int linhas, int colunas, char c[100]){
 	if(linhas==0 || colunas==0) return 0;
 	int i, j;
+	char v[10];
 	printf("Matriz de %s:\n", c);
+	printf("  ");
+	//Número dos vertices das colunas
+	for(j=0; j<colunas; j++){
+		sprintf(v,"v%d",j+1);
+		printf(" %4s", v);
+	}
+	puts("");
 	for(i=0; i<linhas; i++){
+		//Número dos vertices das linhas
+		sprintf(v,"v%d",i+1);
+		printf("%-3s", v);
 		char zero = '0';
 		for(j=0; j<colunas; j++){
 			if(m[i][j]==INFINITO) printf(" --- ");
@@ -196,13 +207,13 @@ void dijkstra(int** g, int** d, int size){
 
 int main()
 {
-	setlocale(LC_ALL,"Portuguese"); //Muda os tipos de caracteres para poder usar acentos e ç
+	setlocale(LC_ALL,"Portuguese"); //Muda os tipos de caracteres para poder usar acentos e ç (Troca o separador de . para , também)
 	int vertices=0;
 	int x, y, z;
 	int **pesos, **d;
 
 	//Abre o arquivo
-	FILE *f = fopen("Entrada.txt", "r");
+	FILE *f = fopen("A.txt", "r");
 	if(f==NULL) puts("ERRO! O arquivo nao foi aberto!");
 	else{
 		vertices = numDeColunas(f); //Pega o numero de vertices
