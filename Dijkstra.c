@@ -28,7 +28,7 @@ int numDeColunas(FILE *f){
 	do{
 		fgets(str, 2048, f);
 	} while(linhaVazia(str));
-	
+
 	int digitos, num, total=0;
 	while(sscanf(str+total, "%d%n", &num, &digitos)!=-1){
 		vertices++;
@@ -46,7 +46,7 @@ int numDeColunas(FILE *f){
 		}
 		if(ProxColuna!=colunas) break;
 	}
-	
+
 	if(linhas!=0){
 		printf("A matriz lida não é uma matriz quadrada\n");
 		return 0;
@@ -71,36 +71,13 @@ int imprimeMatriz(int** m, int linhas, int colunas, char c[100]){
 		//Número dos vertices das linhas
 		sprintf(v,"v%d",i+1);
 		printf("%-3s", v);
-		char zero = '0';
 		for(j=0; j<colunas; j++){
 			if(m[i][j]==INFINITO) printf(" --- ");
-			else if(m[i][j] == 0) printf("%4.c ", zero);
-			else printf("%4.d ", m[i][j]);
+			else printf("%4d ", m[i][j]);
 		}
 		puts("");
 	}
 	puts("");
-}
-
-//Função que adiciona um elemento na fila
-void push(int* vec, int num, int size){
-	int i;
-	for(i=0; i<size; i++){
-		if(vec[i]==-1){
-			vec[i] = num;
-			break;
-		}
-		else if(i==size-1) puts("Falha no push");
-	}
-}
-
-//Função que retira um elemento da fila
-void pop(int* vec, int size){
-	int i;
-	for(i=0; i<size-1; i++){
-		vec[i] = vec[i+1];
-	}
-	vec[i]=-1;
 }
 
 //Função que lê matriz do arquivo f, e guarda nas matrizes pesos e d
@@ -111,23 +88,6 @@ void lerMatriz(FILE *f, int linhas, int colunas, int** pesos, int** d){
 			fscanf(f, "%d", &pesos[i][j]);
 			if(pesos[i][j]==-1)pesos[i][j] = INFINITO;   //Se o numero for -1 o peso é infinito
 			d[i][j] = pesos[i][j];
-		}
-	}
-}
-
-//Função que imprime o caminho minimo entre dois vertices lidos do arquivo f
-int caminhoMinimo(FILE *f, int** d, int max){
-	if(max==0) return 0;
-	int u, v;
-	while(fscanf(f, "%d %d", &u, &v)==2){
-		if((u>=max && v>=max) || (u<0 && v<0)) printf("O grafo não tem os vertices %d e %d\n", u, v);
-		else if(u>=max || u<0) printf("O grafo não tem vertice %d\n", u);
-		else if(v>=max || v<0) printf("O grafo não tem vertice %d\n", v);
-		else{
-			if(d[u][v]==INFINITO)
-				printf("Não é possivel ir de %d até %d\n", u, v);
-			else
-				printf("A distância mínima de %d até %d é: %d\n", u, v, d[u][v]);
 		}
 	}
 }
@@ -152,6 +112,44 @@ void freeMatriz(int** m, int linhas){
 	free(m);
 }
 
+//Função que imprime o caminho minimo entre dois vertices lidos do arquivo f
+int caminhoMinimo(FILE *f, int** d, int max){
+	if(max==0) return 0;
+	int u, v;
+	while(fscanf(f, "%d %d", &u, &v)==2){
+		if((u>=max && v>=max) || (u<0 && v<0)) printf("O grafo não tem os vertices %d e %d\n", u, v);
+		else if(u>=max || u<0) printf("O grafo não tem vertice %d\n", u);
+		else if(v>=max || v<0) printf("O grafo não tem vertice %d\n", v);
+		else{
+			if(d[u][v]==INFINITO)
+				printf("Não é possivel ir de %d até %d\n", u, v);
+			else
+				printf("A distância mínima de %d até %d é: %d\n", u, v, d[u][v]);
+		}
+	}
+}
+
+//Função que adiciona um elemento na fila
+void push(int* vec, int num, int size){
+	int i;
+	for(i=0; i<size; i++){
+		if(vec[i]==-1){
+			vec[i] = num;
+			break;
+		}
+		else if(i==size-1) puts("Falha no push");
+	}
+}
+
+//Função que retira um elemento da fila
+void pop(int* vec, int size){
+	int i;
+	for(i=0; i<size-1; i++){
+		vec[i] = vec[i+1];
+	}
+	vec[i]=-1;
+}
+
 //Função que cria matriz de distancias minimas
 void dijkstra(int** g, int** d, int size){
 	int i;
@@ -163,7 +161,6 @@ void dijkstra(int** g, int** d, int size){
 	/*
 	*Repete o processo de achar a distancia minima
 	*Uma vez para cada vertice
-	*Inicio é o vertice de ponto de partida
 	*/
 	for(inicio=0; inicio<size; inicio++){
 		//Inicializa a fila Q e o vetor cor
@@ -207,14 +204,14 @@ void dijkstra(int** g, int** d, int size){
 
 int main()
 {
-	setlocale(LC_ALL,"Portuguese"); //Muda os tipos de caracteres para poder usar acentos e ç (Troca o separador de . para , também)
+	setlocale(LC_ALL,"Portuguese");
 	int vertices=0;
 	int x, y, z;
 	int **pesos, **d;
 
 	//Abre o arquivo
 	FILE *f = fopen("A.txt", "r");
-	if(f==NULL) puts("ERRO! O arquivo nao foi aberto!");
+	if(f==NULL) puts("ERRO! O arquivo não foi aberto!");
 	else{
 		vertices = numDeColunas(f); //Pega o numero de vertices
 		rewind(f);  //Volta para o começo do arquivo
@@ -224,16 +221,16 @@ int main()
 	pesos = alocaMatriz(vertices, vertices);
 	d = alocaMatriz(vertices, vertices);
 
-	lerMatriz(f, vertices, vertices, pesos, d);	//Inicializa as matrizes
+	lerMatriz(f, vertices, vertices, pesos, d);
 	
-	imprimeMatriz(pesos, vertices, vertices, "pesos"); //IMPRIME a matriz de pesos
+	imprimeMatriz(pesos, vertices, vertices, "pesos");
 
-	dijkstra(pesos, d, vertices); //Chama a função de dijkstra
+	dijkstra(pesos, d, vertices);
 
-	imprimeMatriz(d, vertices, vertices, "distância mínima"); //IMPRIME a matriz de distancias minimas
+	imprimeMatriz(d, vertices, vertices, "distância mínima");
 
-	caminhoMinimo(f, d, vertices); //IMPRIME caminho minimo de um vertice a outro
-
+	caminhoMinimo(f, d, vertices);
+	
 	if(f!=NULL) fclose(f); //Fecha o arquivo
 	//Liberta os espaços alocados da memória
 	freeMatriz(pesos, vertices);
