@@ -117,14 +117,14 @@ int caminhoMinimo(FILE *f, int** d, int max){
 	if(max==0) return 0;
 	int u, v;
 	while(fscanf(f, "%d %d", &u, &v)==2){
-		if((u>=max && v>=max) || (u<0 && v<0)) printf("O grafo não tem os vertices %d e %d\n", u, v);
-		else if(u>=max || u<0) printf("O grafo não tem vertice %d\n", u);
-		else if(v>=max || v<0) printf("O grafo não tem vertice %d\n", v);
+		if((u-1>=max || u-1<0) && (v-1>=max || v-1<0)) printf("O grafo não tem os vertices v%d e v%d\n", u, v);
+		else if(u-1>=max || u-1<0) printf("O grafo não tem vertice v%d\n", u);
+		else if(v-1>=max || v-1<0) printf("O grafo não tem vertice v%d\n", v);
 		else{
-			if(d[u][v]==INFINITO)
-				printf("Não é possivel ir de %d até %d\n", u, v);
+			if(d[u-1][v-1]==INFINITO)
+				printf("Não é possivel ir de v%d até v%d\n", u, v);
 			else
-				printf("A distância mínima de %d até %d é: %d\n", u, v, d[u][v]);
+				printf("A distância mínima de v%d até v%d é: %d\n", u, v, d[u-1][v-1]);
 		}
 	}
 }
